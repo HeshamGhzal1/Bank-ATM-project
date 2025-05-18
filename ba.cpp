@@ -39,7 +39,7 @@ struct suser
 };
 
 sclient client;
-string separator = "#\\#";
+string separator = "###";
 string target;
 string file_name = "Hesham.txt";
 
@@ -585,7 +585,7 @@ static void show_transaction_menu()
 static void project_bank(int select, suser user)
 {
 	sclient client;
-	string separator = "#\\#";
+	string separator = "###";
 	string target;
 	string file_name = "Hesham.txt";
 
@@ -1333,10 +1333,11 @@ string selectin()
 	cout << "[2] Normal withdraw\n";
 	cout << "[3] Deposit\n";
 	cout << "[4] Chick balance\n";
-	string choice = user_input("Enter your choice from 1->4 : ");
-	while (choice != "1" && choice != "2" && choice != "3" && choice != "4")
+	cout << "[4] Exit\n";
+	string choice = user_input("Enter your choice from 1->5 : ");
+	while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
 	{
-		cout << "Invalid choice Please Enter your choice from 1->4 : ";
+		cout << "Invalid choice Please Enter your choice from 1->5 : ";
 		cin >> choice;
 	}
 	return choice;
@@ -1356,7 +1357,7 @@ void check_balance()
 static void project_ATM(int select, suser user)
 {
 	sclient client;
-	string separator = "#\\#";
+	string separator = "###";
 	string target;
 	string file_name = "Hesham.txt";
 	select = stoi(selectin());
@@ -1368,43 +1369,41 @@ static void project_ATM(int select, suser user)
 		cout << "\n                        =================================\n";
 		cout << "                                 Quick withdraw       ";
 		cout << "\n                        =================================\n";
-		show_clients_data_in_form(file_name, separator);
+		quick_withdraw();
 	}
 	else if (select == 2)
 	{
 		clear_screen();
 
-		cout << "\n===================================\n";
-		cout << "        Normal withdraw";
-		cout << "\n===================================\n";
-
-		print_Clint_data_line_to_file(separator, file_name, target);
+		cout << "\n                        ===================================\n";
+		cout << "                                   Normal withdraw";
+		cout << "\n                        ===================================\n";
+		normal_withdraw();
 	}
 	else if (select == 3)
 	{
 		clear_screen();
 
-		cout << "\n===================================\n";
-		cout << "        Deposit screen";
-		cout << "\n===================================\n";
+		cout << "\n                       ===================================\n";
+		cout << "                                   Deposit screen";
+		cout << "\n                       ===================================\n";
 
-		target = user_input("Enter Account number you wont to delete : ");
-		delete_clients_data_by_AccountNumber(file_name, separator, target);
+		deposit();
 	}
 	else if (select == 4)
 	{
 		clear_screen();
 
-		cout << "\n===================================\n";
-		cout << "        Check Client Balance";
-		cout << "\n===================================\n";
+		cout << "\n                        ===================================\n";
+		cout << "                                   Check Client Balance";
+		cout << "\n                        ===================================\n";
 
-		update_clients_data_by_AccountNumber(file_name, separator, target, client);
+		check_balance();
 	}
 
 	else
 	{
-		End_screen();
+		return;
 	}
 }
 void ATM_machine()
