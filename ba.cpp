@@ -1333,7 +1333,7 @@ string selectin()
 	cout << "[2] Normal withdraw\n";
 	cout << "[3] Deposit\n";
 	cout << "[4] Chick balance\n";
-	cout << "[4] Exit\n";
+	cout << "[5] Exit\n";
 	string choice = user_input("Enter your choice from 1->5 : ");
 	while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
 	{
