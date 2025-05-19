@@ -1324,6 +1324,13 @@ void login_bank_system()
 	show_main_menu(user);
 }
 
+void Quick_withdraw_menu()
+{
+	cout << "[1] =5       [2]=50\n";
+	cout << "[3] =100     [4]=500\n";
+	cout << "[5] =1000    [6]=2000\n";
+	cout << "[1] =5       [2]=10\n";
+}
 string selectin()
 {
 	cout << "\n===============================\n";
@@ -1345,21 +1352,23 @@ string selectin()
 void quick_withdraw()
 {
 }
-void normal_withdraw()
+void normal_withdraw(string file_name, string separator, string target, sclient client)
 {
+	withdraw_clients_balance_by_AccountNumber(file_name, separator, target, client);
 }
-void deposit()
+void deposit(string file_name, string separator, string target, sclient client)
 {
+	deposit_clients_balance_by_AccountNumber(file_name, separator, target, client);
 }
 void check_balance()
 {
+	print_client_date_record(client);
 }
-static void project_ATM(int select, suser user)
+static void project_ATM(int select, string file_name, string separator, string target, sclient client)
 {
-	sclient client;
-	string separator = "###";
-	string target;
-	string file_name = "Hesham.txt";
+	// string separator = "###";
+	// string target;
+	// string file_name = "Hesham.txt";
 	select = stoi(selectin());
 
 	if (select == 1)
@@ -1378,7 +1387,7 @@ static void project_ATM(int select, suser user)
 		cout << "\n                        ===================================\n";
 		cout << "                                   Normal withdraw";
 		cout << "\n                        ===================================\n";
-		normal_withdraw();
+		normal_withdraw(file_name, separator, target, client);
 	}
 	else if (select == 3)
 	{
@@ -1388,7 +1397,7 @@ static void project_ATM(int select, suser user)
 		cout << "                                   Deposit screen";
 		cout << "\n                       ===================================\n";
 
-		deposit();
+		deposit(file_name, separator, target, client);
 	}
 	else if (select == 4)
 	{
@@ -1408,7 +1417,15 @@ static void project_ATM(int select, suser user)
 }
 void ATM_machine()
 {
-	suser user;
+	string target = "hesham ghzal";
+	string file_name = "Hesham.txt";
+	client.account_num = "a1111";
+	target = client.account_num;
+
+	client.balance = 50000;
+	client.name = "hesham ghzal";
+	client.phone = "012121254";
+	client.pin_code = "b1111";
 	int select = 1;
-	project_ATM(select, user);
+	project_ATM(select, file_name, separator, target, client);
 }
