@@ -497,33 +497,35 @@ int atm_withdraw(int value, short paper_value)
 static double Check_enough_Balance_to_withdraw(sclient client)
 {
 	double withdraw;
-	if (atm)
+	do
 	{
-		if (fast_withdraw)
+		if (atm)
 		{
-			withdraw = Quick_withdraw_menu();
+			if (fast_withdraw)
+			{
+				withdraw = Quick_withdraw_menu();
+			}
+			else
+			{
+				withdraw = atm_withdraw(withdraw, paper_value);
+			}
 		}
 		else
 		{
-			withdraw = atm_withdraw(withdraw, paper_value);
+			cout << "Enter value to withdraw : ";
+			cin >> withdraw;
 		}
-	}
-	else
-	{
-		cout << "Enter value to withdraw : ";
-		cin >> withdraw;
-	}
 
-	while (withdraw > client.balance)
-	{
-		cout << "No enough balance\n";
-		cout << "Enter less value  : ";
-		cin >> withdraw;
-	}
+		if (withdraw > client.balance)
+		{
+			cout << "No enough balance ";
+			cout << "Enter less value \n";
+		}
+	} while (withdraw > client.balance);
 
 	return client.balance - withdraw;
 }
-static vector<string> Check_enough_Balance_to_withdraw(string file_name, string separator, string target, sclient &client)
+static vector<string> Balance_to_withdraw(string file_name, string separator, string target, sclient &client)
 {
 	vector<string> vs;
 	vs = get_string_from_file_to_vector(file_name);
@@ -594,7 +596,7 @@ static void Transaction(string file_name, string separator, string target, sclie
 		cout << "\n===================================\n";
 
 		target = user_input("Enter Account number : ");
-		Check_enough_Balance_to_withdraw(file_name, separator, target, client);
+		Balance_to_withdraw(file_name, separator, target, client);
 		cout << endl;
 	}
 	else if (selection == "3")
@@ -1410,12 +1412,12 @@ string selectin()
 }
 void quick_withdraw(string file_name, string separator, string target, sclient client)
 {
-	fast_withdraw=1;
-	Check_enough_Balance_to_withdraw(file_name, separator, target, client);
+	fast_withdraw = 1;
+	Balance_to_withdraw(file_name, separator, target, client);
 }
 void normal_withdraw(string file_name, string separator, string target, sclient client)
 {
-	Check_enough_Balance_to_withdraw(file_name, separator, target, client);
+	Balance_to_withdraw(file_name, separator, target, client);
 }
 void deposit(string file_name, string separator, string target, sclient client)
 {
