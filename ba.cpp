@@ -41,7 +41,8 @@ struct suser
 sclient client;
 string separator = "###";
 string target;
-string file_name = "Hesham.txt";
+string client_file_name = "fclient.txt";
+string user_file_name = "fuser.txt";
 bool atm = 0;
 bool fast_withdraw = 0;
 
@@ -51,17 +52,19 @@ short paper_value = 5;
 void show_user_menu(suser user);
 void show_main_menu(suser user);
 void login_bank_system();
+sclient ATM_client_login();
 
 bool check_user_permission(suser user, int permission);
-void ATM_machine();
-int atm_withdraw(int value, short paper_value);
+void ATM_machine(sclient client);
+void Login_ATM_machine();
 
 int main()
 {
 	// login_bank_system();
 	int value = 5;
 	short paper_value = 5;
-	ATM_machine();
+	Login_ATM_machine();
+
 	cout << endl;
 }
 void clear_screen()
@@ -412,12 +415,12 @@ static double Balance_deposit(sclient client)
 	return client.balance + deposit;
 }
 
-static vector<string> deposit_clients_balance_by_AccountNumber(string file_name, string separator, string target, sclient &client)
+static vector<string> deposit_clients_balance_by_AccountNumber(string separator, string target, sclient &client)
 {
 	vector<string> vs;
-	vs = get_string_from_file_to_vector(file_name);
+	vs = get_string_from_file_to_vector(client_file_name);
 
-	if (find_clients_data_by_AccountNumber(file_name, separator, target, client))
+	if (find_clients_data_by_AccountNumber(client_file_name, separator, target, client))
 	{
 		for (string &s : vs)
 		{
@@ -433,7 +436,7 @@ static vector<string> deposit_clients_balance_by_AccountNumber(string file_name,
 					client.balance = Balance_deposit(client);
 					cout << "\nNew client balance =  " << client.balance << "\n";
 					s = convert_record_data_to_line(client, separator);
-					write_string_from_vector_to_file(vs, file_name);
+					write_string_from_vector_to_file(vs, client_file_name);
 					cout << "\nClient balance updated successfully\n";
 					break;
 				}
@@ -585,7 +588,7 @@ static void Transaction(string file_name, string separator, string target, sclie
 		cout << "        client deposit screen";
 		cout << "\n===================================\n";
 		target = user_input("Enter Account number : ");
-		deposit_clients_balance_by_AccountNumber(file_name, separator, target, client);
+		deposit_clients_balance_by_AccountNumber(separator, target, client);
 		cout << endl;
 	}
 	else if (selection == "2")
@@ -638,7 +641,7 @@ static string Transaction_menu()
 static void show_transaction_menu()
 {
 	string selection = Transaction_menu();
-	Transaction(file_name, separator, target, client, selection);
+	Transaction(client_file_name, separator, target, client, selection);
 	if (selection == "4")
 		return;
 	cout << "Press any kay to return to transaction menu";
@@ -655,7 +658,7 @@ static void project_bank(int select, suser user)
 	sclient client;
 	string separator = "###";
 	string target;
-	string file_name = "Hesham.txt";
+	string file_name = "fclient.txt";
 
 	if (select == 1)
 	{
@@ -672,8 +675,6 @@ static void project_bank(int select, suser user)
 			cout << "You dont have permission to show client\n";
 			cout << "Press any kay to return to main menu\n";
 
-			cin.ignore();
-			cin.get();
 			cin.ignore();
 			cin.get();
 			show_main_menu(user);
@@ -1392,8 +1393,11 @@ void login_bank_system()
 	show_main_menu(user);
 }
 
-string selectin()
+string selectin(sclient client)
 {
+	clear_screen();
+	cout << "\n--------" << client.name << "----------\n";
+
 	cout << "\n===============================\n";
 	cout << "      ATM system menu ";
 	cout << "\n===============================\n";
@@ -1410,64 +1414,92 @@ string selectin()
 	}
 	return choice;
 }
-void quick_withdraw(string file_name, string separator, string target, sclient client)
+void quick_withdraw(sclient client)
 {
+	string target = client.account_num;
 	fast_withdraw = 1;
-	Balance_to_withdraw(file_name, separator, target, client);
+	Balance_to_withdraw("fclient.txt", separator, target, client);
+	fast_withdraw = 0;
 }
-void normal_withdraw(string file_name, string separator, string target, sclient client)
+void normal_withdraw(sclient client)
 {
-	Balance_to_withdraw(file_name, separator, target, client);
+	string target = client.account_num;
+	Balance_to_withdraw("fclient.txt", separator, target, client);
 }
-void deposit(string file_name, string separator, string target, sclient client)
+void deposit(sclient client)
 {
-	deposit_clients_balance_by_AccountNumber(file_name, separator, target, client);
+	string target = client.account_num;
+	deposit_clients_balance_by_AccountNumber(separator, target, client);
 }
-void check_balance()
+void check_balance(sclient client)
 {
 	print_client_date_record(client);
 }
-static void project_ATM(int select, string file_name, string separator, string target, sclient client)
+static void project_ATM(sclient client)
 {
-	select = stoi(selectin());
+	int select = stoi(selectin(client));
+	string target = client.account_num;
 
 	if (select == 1)
 	{
 		clear_screen();
+		cout << "\n                       --------" << client.name << "----------\n";
 
 		cout << "\n                        =================================\n";
 		cout << "                                 Quick withdraw       ";
 		cout << "\n                        =================================\n";
-		quick_withdraw(file_name, separator, target, client);
+		quick_withdraw(client);
+		cout << "Press \"ENTER\" to return to main menu\n";
+		cin.ignore();
+		cin.get();
+		project_ATM(client);
 	}
 	else if (select == 2)
 	{
 		clear_screen();
+		cout << "\n                       --------" << client.name << "----------\n";
 
 		cout << "\n                        ===================================\n";
 		cout << "                                   Normal withdraw";
 		cout << "\n                        ===================================\n";
-		normal_withdraw(file_name, separator, target, client);
+		normal_withdraw(client);
+
+		cout << "Press \"ENTER\" to return to main menu\n";
+		cin.ignore();
+		cin.get();
+		project_ATM(client);
 	}
 	else if (select == 3)
 	{
 		clear_screen();
+		cout << "\n                       --------" << client.name << "----------\n";
 
 		cout << "\n                       ===================================\n";
 		cout << "                                   Deposit screen";
 		cout << "\n                       ===================================\n";
 
-		deposit(file_name, separator, target, client);
+		deposit(client);
+
+		cout << "Press \"ENTER\" to return to main menu\n";
+		cin.ignore();
+		cin.get();
+		project_ATM(client);
 	}
 	else if (select == 4)
 	{
 		clear_screen();
+		cout << "\n                       --------" << client.name << "----------\n";
 
 		cout << "\n                        ===================================\n";
 		cout << "                                   Check Client Balance";
 		cout << "\n                        ===================================\n";
 
-		check_balance();
+		check_balance(client);
+
+		cout << "Press \"ENTER\" to return to main menu\n";
+		cin.ignore();
+		cin.get();
+		project_ATM(client);
 	}
 
 	else
@@ -1475,18 +1507,48 @@ static void project_ATM(int select, string file_name, string separator, string t
 		return;
 	}
 }
-void ATM_machine()
-{
-	atm = 1;
-	string target = "hesham ghzal";
-	string file_name = "Hesham.txt";
-	client.account_num = "a1111";
-	target = client.account_num;
 
-	client.balance = 50000;
-	client.name = "hesham ghzal";
-	client.phone = "012121254";
-	client.pin_code = "b1111";
-	int select = 1;
-	project_ATM(select, file_name, separator, target, client);
+sclient ATM_client_login()
+{
+	clear_screen();
+	sclient client;
+	string target = client.account_num;
+	target = user_input("Enter User Account number : ");
+	if (find_clients_data_by_AccountNumber("fclient.txt", separator, target, client))
+	{
+		cout << "Enter Client pin_code : ";
+		string pin_code;
+		cin >> pin_code;
+		if (client.pin_code == pin_code)
+		{
+			return client;
+		}
+		else
+		{
+			cout << "Invalid Pin_code\n";
+			cout << "Press \"ENTER\" to Relogin\n";
+
+			cin.ignore();
+			cin.get();
+			return ATM_client_login();
+		}
+	}
+	else
+	{
+		cout << "User Not found \n";
+		cout << "Press \"ENTER\" to Relogin\n";
+
+		cin.ignore();
+		cin.get();
+		return ATM_client_login();
+	}
+}
+
+void Login_ATM_machine()
+{
+	sclient client = ATM_client_login();
+
+	atm = 1;
+	project_ATM(client);
+	atm = 0;
 }
