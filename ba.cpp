@@ -42,20 +42,25 @@ sclient client;
 string separator = "###";
 string target;
 string file_name = "Hesham.txt";
+bool atm = 0;
+bool fast_withdraw = 0;
+
+int value = 5;
+short paper_value = 5;
 
 void show_user_menu(suser user);
-
+void show_main_menu(suser user);
 void login_bank_system();
 
 bool check_user_permission(suser user, int permission);
 void ATM_machine();
-
-void show_main_menu(suser user);
+int atm_withdraw(int value, short paper_value);
 
 int main()
 {
 	// login_bank_system();
-
+	int value = 5;
+	short paper_value = 5;
 	ATM_machine();
 	cout << endl;
 }
@@ -442,11 +447,73 @@ static vector<string> deposit_clients_balance_by_AccountNumber(string file_name,
 	return vs;
 }
 
-static double Balance_withdraw(sclient client)
+int Quick_withdraw_menu()
+{
+	cout << "				[1] =5       [2]=10\n";
+	cout << "				[3] =50      [4]=100\n";
+	cout << "				[5] =500     [6]=1000\n";
+	cout << "				[7] =2000    [8]=5000\n";
+	string choice = user_input("Enter your choice from 1->8 : ");
+	while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6" && choice != "7" && choice != "8")
+	{
+		cout << "Invalid choice Please Enter your choice from 1->8 : ";
+		cin >> choice;
+	}
+	if (choice == "1")
+		return 5;
+	else if (choice == "2")
+		return 10;
+	else if (choice == "3")
+		return 50;
+	else if (choice == "4")
+		return 100;
+	else if (choice == "5")
+		return 500;
+	else if (choice == "6")
+		return 1000;
+	else if (choice == "7")
+		return 2000;
+	else if (choice == "8")
+		return 5000;
+	else
+		return 0;
+}
+bool paper_mony_multiplication(int value, short paper_value)
+{
+	return (value == 5 || value % paper_value == 0);
+}
+int atm_withdraw(int value, short paper_value)
 {
 	double withdraw;
-	cout << "Enter value you will withdraw : ";
+	cout << "Please Enter multiplication of : [" << paper_value << "] : ";
 	cin >> withdraw;
+	while (!paper_mony_multiplication(withdraw, paper_value))
+	{
+		cout << "Please Enter multiplication of : [" << paper_value << "] : ";
+		cin >> withdraw;
+	}
+	return withdraw;
+}
+static double Check_enough_Balance_to_withdraw(sclient client)
+{
+	double withdraw;
+	if (atm)
+	{
+		if (fast_withdraw)
+		{
+			withdraw = Quick_withdraw_menu();
+		}
+		else
+		{
+			withdraw = atm_withdraw(withdraw, paper_value);
+		}
+	}
+	else
+	{
+		cout << "Enter value to withdraw : ";
+		cin >> withdraw;
+	}
+
 	while (withdraw > client.balance)
 	{
 		cout << "No enough balance\n";
@@ -456,7 +523,7 @@ static double Balance_withdraw(sclient client)
 
 	return client.balance - withdraw;
 }
-static vector<string> withdraw_clients_balance_by_AccountNumber(string file_name, string separator, string target, sclient &client)
+static vector<string> Check_enough_Balance_to_withdraw(string file_name, string separator, string target, sclient &client)
 {
 	vector<string> vs;
 	vs = get_string_from_file_to_vector(file_name);
@@ -474,7 +541,7 @@ static vector<string> withdraw_clients_balance_by_AccountNumber(string file_name
 				cin >> answer;
 				if (tolower(answer) == 'y')
 				{
-					client.balance = Balance_withdraw(client);
+					client.balance = Check_enough_Balance_to_withdraw(client);
 					cout << "\nNew client balance =  " << client.balance << "\n";
 					s = convert_record_data_to_line(client, separator);
 					write_string_from_vector_to_file(vs, file_name);
@@ -515,7 +582,6 @@ static void Transaction(string file_name, string separator, string target, sclie
 		cout << "\n===================================\n";
 		cout << "        client deposit screen";
 		cout << "\n===================================\n";
-
 		target = user_input("Enter Account number : ");
 		deposit_clients_balance_by_AccountNumber(file_name, separator, target, client);
 		cout << endl;
@@ -528,7 +594,7 @@ static void Transaction(string file_name, string separator, string target, sclie
 		cout << "\n===================================\n";
 
 		target = user_input("Enter Account number : ");
-		withdraw_clients_balance_by_AccountNumber(file_name, separator, target, client);
+		Check_enough_Balance_to_withdraw(file_name, separator, target, client);
 		cout << endl;
 	}
 	else if (selection == "3")
@@ -1324,13 +1390,6 @@ void login_bank_system()
 	show_main_menu(user);
 }
 
-void Quick_withdraw_menu()
-{
-	cout << "[1] =5       [2]=50\n";
-	cout << "[3] =100     [4]=500\n";
-	cout << "[5] =1000    [6]=2000\n";
-	cout << "[1] =5       [2]=10\n";
-}
 string selectin()
 {
 	cout << "\n===============================\n";
@@ -1349,12 +1408,14 @@ string selectin()
 	}
 	return choice;
 }
-void quick_withdraw()
+void quick_withdraw(string file_name, string separator, string target, sclient client)
 {
+	fast_withdraw=1;
+	Check_enough_Balance_to_withdraw(file_name, separator, target, client);
 }
 void normal_withdraw(string file_name, string separator, string target, sclient client)
 {
-	withdraw_clients_balance_by_AccountNumber(file_name, separator, target, client);
+	Check_enough_Balance_to_withdraw(file_name, separator, target, client);
 }
 void deposit(string file_name, string separator, string target, sclient client)
 {
@@ -1366,9 +1427,6 @@ void check_balance()
 }
 static void project_ATM(int select, string file_name, string separator, string target, sclient client)
 {
-	// string separator = "###";
-	// string target;
-	// string file_name = "Hesham.txt";
 	select = stoi(selectin());
 
 	if (select == 1)
@@ -1378,7 +1436,7 @@ static void project_ATM(int select, string file_name, string separator, string t
 		cout << "\n                        =================================\n";
 		cout << "                                 Quick withdraw       ";
 		cout << "\n                        =================================\n";
-		quick_withdraw();
+		quick_withdraw(file_name, separator, target, client);
 	}
 	else if (select == 2)
 	{
@@ -1417,6 +1475,7 @@ static void project_ATM(int select, string file_name, string separator, string t
 }
 void ATM_machine()
 {
+	atm = 1;
 	string target = "hesham ghzal";
 	string file_name = "Hesham.txt";
 	client.account_num = "a1111";
