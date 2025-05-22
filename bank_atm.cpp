@@ -1498,4 +1498,39 @@ namespace BankATM
         show_ATM_menu(client);
         atm = 0;
     }
+
+    void Select_bank_OR_ATM()
+    {
+        string selection;
+        do
+        {
+            cout << "Select [1] to BANK SYSTEM .\n";
+            cout << "Select [2] to ATM SYSTEM .\n";
+            cout << "Enter your selection : ";
+            cin >> selection;
+        } while (selection != "1" && selection != "2");
+        if (selection == "1")
+        {
+            cout << "\n-----------------------------\n";
+            cout << "    WELLCOM TO BANK SYSTEM";
+            cout << "\n-----------------------------\n";
+
+            cout << "Press \"ENTER\" to continue\n";
+            cin.ignore();
+            cin.get();
+
+            login_bank_system();
+        }
+        else if (selection == "2")
+        {
+            cout << "\n-----------------------------\n";
+            cout << "    WELLCOM TO ATM SYSTEM";
+            cout << "\n-----------------------------\n";
+
+            cout << "Press \"ENTER\" to continue\n";
+            cin.ignore();
+            cin.get();
+            Login_ATM_machine();
+        }
+    }
 }

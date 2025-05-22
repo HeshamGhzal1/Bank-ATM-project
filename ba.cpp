@@ -7,9 +7,7 @@ using namespace BankATM;
 
 int main()
 {
-	// login_bank_system();
-
-	Login_ATM_machine();
+	Select_bank_OR_ATM();
 
 	cout << endl;
 	return 0;

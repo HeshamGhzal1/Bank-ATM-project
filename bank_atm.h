@@ -102,5 +102,7 @@ void deposit(sclient client);
 void check_balance(sclient client);
 void project_ATM(int select,sclient client);
 sclient ATM_client_login();
+void Select_bank_OR_ATM();
+
 
 } // namespace BankATM
