@@ -772,7 +772,7 @@ namespace BankATM
     }
     string BANK_main_menu()
     {
-        clear_screen();
+        // clear_screen();
         string selection;
         cout << "===================================\n";
         cout << "          main menu screen        ";
@@ -911,6 +911,8 @@ namespace BankATM
 
     void show_main_menu(suser user)
     {
+        clear_screen();
+        cout << "\n-----------" << user.user_name << "-----------\n";
         int select = stoi(BANK_main_menu());
         project_bank(select, user);
         if (select == 8)
@@ -1151,7 +1153,7 @@ namespace BankATM
             else
             {
                 cout << "You dont have permission to show user\n";
-                cout << "Press any kay to return to user menu\n";
+                cout << "Press \"ENTER\" to return to user menu\n";
 
                 cin.ignore();
                 cin.get();
@@ -1172,7 +1174,7 @@ namespace BankATM
             else
             {
                 cout << "You dont have permission to add user\n";
-                cout << "Press any kay to return to user menu\n";
+                cout << "Press \"ENTER\" to return to user menu\n";
 
                 cin.ignore();
                 cin.get();
@@ -1193,7 +1195,7 @@ namespace BankATM
                 if (admin_removing_protection(user, user_file_name, target))
                 {
                     cout << "You dont have permission to delete this user\n";
-                    cout << "Press any kay to return to user menu\n";
+                    cout << "Press \"ENTER\" to return to user menu\n";
 
                     cin.ignore();
                     cin.get();
@@ -1207,7 +1209,7 @@ namespace BankATM
             else
             {
                 cout << "You dont have permission to delete user\n";
-                cout << "Press any kay to return to user menu\n";
+                cout << "Press \"ENTER\" to return to user menu\n";
 
                 cin.ignore();
                 cin.get();
@@ -1228,7 +1230,7 @@ namespace BankATM
             else
             {
                 cout << "You dont have permission to update user\n";
-                cout << "Press any kay to return to user menu\n";
+                cout << "Press \"ENTER\" to return to user menu\n";
 
                 cin.ignore();
                 cin.get();
@@ -1258,7 +1260,7 @@ namespace BankATM
             else
             {
                 cout << "You dont have permission to find user\n";
-                cout << "Press any kay to return to user menu\n";
+                cout << "Press \"ENTER\" to return to user menu\n";
 
                 cin.ignore();
                 cin.get();
@@ -1313,7 +1315,7 @@ namespace BankATM
             else
             {
                 cout << "Invalid password\n";
-                cout << "press any kay to Relogin";
+                cout << "Press \"ENTER\" to Relogin";
 
                 cin.ignore();
                 cin.get();
@@ -1323,7 +1325,7 @@ namespace BankATM
         else
         {
             cout << "User Not found \n";
-            cout << "press any kay to Relogin";
+            cout << "Press \"ENTER\" to Relogin";
 
             cin.ignore();
             cin.get();
