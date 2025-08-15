@@ -799,7 +799,7 @@ namespace BankATM
     char ask_user_permission(suser user, string question)
     {
         char answer = 'n';
-        cout << question << user.user_name << " ?[y]or[no] :";
+        cout << question << user.user_name << " ?[y]or[n] :";
         cin >> answer;
         answer = tolower(answer);
         return answer;
